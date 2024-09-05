@@ -1,0 +1,1 @@
+exports.SUPPORTED_MIMETYPE_IMAGE = ['image/png', 'image/jpg', 'image/jpeg'];

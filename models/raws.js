@@ -7,9 +7,11 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
     },
     name: {
+      allowNull: false,
       type: Sequelize.STRING,
     },
     pricePerKg: {
+      allowNull: false,
       type: Sequelize.INTEGER,
     },
     createdAt: Sequelize.DATE,

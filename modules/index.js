@@ -1,11 +1,14 @@
 const express = require("express");
-const raws = require("./raws/route");
 const { setResponse } = require("../utils/helpers");
 
 const app = express();
 
+const raws = require("./raws/route");
+const products = require("./products/route");
+
 let API_VERSION = "v1";
 app.use(`/${API_VERSION}/raw`, raws);
+app.use(`/${API_VERSION}/product`, products);
 
 app.use("/", (req, res, next) => {
   const status = 404;
