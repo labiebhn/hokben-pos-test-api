@@ -47,4 +47,18 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+// Model
+db.products = require("./products")(sequelize, Sequelize);
+db.product_raws = require("./product_raws")(sequelize, Sequelize);
+db.raws = require("./raws")(sequelize, Sequelize);
+
+// Relationship
+db.products.hasMany(db.product_raws, {
+  as: "raws",
+});
+db.product_raws.belongsTo(db.raws, {
+  as: "detail",
+  foreignKey: "rawId",
+});
+
 module.exports = db;
