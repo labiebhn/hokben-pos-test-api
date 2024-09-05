@@ -2,6 +2,8 @@ const db = require("../../models");
 const { setResponse, removeImage } = require("../../utils/helpers");
 
 const Products = db.products;
+const ProductRaws = db.product_raws;
+const Raws = db.raws;
 
 exports.createProduct = async (req, res, next) => {
   try {
@@ -15,7 +17,17 @@ exports.createProduct = async (req, res, next) => {
       price: body?.price,
       imageUri: file?.path,
     };
-    await Products.create(schema);
+    const productResult = await Products.create(schema);
+
+    let schemaProductRaws = [];
+    for (let raw of body?.raws) {
+      schemaProductRaws.push({
+        productId: productResult?.id,
+        rawId: raw?.rawId,
+        usageInGram: raw?.usageInGram,
+      });
+    }
+    await ProductRaws.bulkCreate(schemaProductRaws);
 
     res.status(status).json(setResponse(status, message, data));
   } catch (error) {
@@ -33,6 +45,22 @@ exports.getProduct = async (req, res, next) => {
       attributes: { exclude: ["deletedAt", "updatedAt"] },
       order: [["name", "ASC"]],
       where: { deletedAt: null },
+      include: [
+        {
+          model: ProductRaws,
+          as: "raws",
+          required: false,
+          attributes: { exclude: ["createdAt", "deletedAt", "updatedAt"] },
+          where: { deletedAt: null },
+          include: [
+            {
+              model: Raws,
+              as: "detail",
+              attributes: { exclude: ["createdAt", "deletedAt", "updatedAt"] },
+            },
+          ],
+        },
+      ],
     });
 
     res.status(status).json(setResponse(status, message, data));
@@ -62,6 +90,28 @@ exports.updateProduct = async (req, res, next) => {
     }
 
     await Products.update(schema, { where: { id: params?.id } });
+
+    if (body?.raws) {
+      let schemaProductRaws = [];
+      for (let raw of body?.raws) {
+        schemaProductRaws.push({
+          id: raw?.id || null,
+          productId: params?.id,
+          rawId: raw?.rawId,
+          usageInGram: raw?.usageInGram,
+        });
+      }
+      await ProductRaws.bulkCreate(schemaProductRaws, {
+        updateOnDuplicate: ["usageInGram"],
+      });
+    }
+
+    if (body?.deletedRaws || body?.deletedRaws?.length) {
+      await ProductRaws.update(
+        { deletedAt: new Date() },
+        { where: { id: body.deletedRaws } }
+      );
+    }
 
     res.status(status).json(setResponse(status, message, data));
   } catch (error) {
