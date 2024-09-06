@@ -15,7 +15,7 @@ exports.createProduct = async (req, res, next) => {
     const schema = {
       name: body?.name,
       price: body?.price,
-      imageUri: file?.path,
+      imageUri: file?.path.replace(/\\/g, "/"),
     };
     const productResult = await Products.create(schema);
 
@@ -81,7 +81,7 @@ exports.updateProduct = async (req, res, next) => {
       price: body?.price,
     };
     if (file?.path) {
-      schema.imageUri = file.path;
+      schema.imageUri = file.path.replace(/\\/g, "/");
       const product = await Products.findByPk(params?.id, {
         attributes: ["imageUri"],
         raw: true,
@@ -95,7 +95,7 @@ exports.updateProduct = async (req, res, next) => {
       let schemaProductRaws = [];
       for (let raw of body?.raws) {
         schemaProductRaws.push({
-          id: raw?.id || null,
+          id: raw?.id,
           productId: params?.id,
           rawId: raw?.rawId,
           usageInGram: raw?.usageInGram,
