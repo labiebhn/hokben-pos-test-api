@@ -67,6 +67,7 @@ db.product_raws.belongsTo(db.raws, {
 db.transactions.hasMany(db.transaction_details, {
   as: "transactionDetails",
 });
+db.transaction_details.belongsTo(db.products);
 db.transaction_details.hasMany(db.transaction_detail_raws, {
   as: "transactionRaws",
 });
