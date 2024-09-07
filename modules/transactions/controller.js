@@ -126,7 +126,7 @@ exports.getTransaction = async (req, res, next) => {
 
     data = await Transactions.findAll({
       attributes: { exclude: ["deletedAt", "updatedAt"] },
-      order: [["createdAt", "ASC"]],
+      order: [["createdAt", "DESC"]],
       where: { deletedAt: null },
       include: [
         {
@@ -167,6 +167,10 @@ exports.getTransactionDetail = async (req, res, next) => {
           as: "transactionDetails",
           attributes: { exclude: ["deletedAt", "updatedAt"] },
           include: [
+            {
+              model: Products,
+              attributes: ["id", "name"],
+            },
             {
               model: TransactionsDetailRaws,
               as: "transactionRaws",
