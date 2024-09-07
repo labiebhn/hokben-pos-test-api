@@ -54,10 +54,11 @@ exports.createTransaction = async (req, res, next) => {
       const product = products.find(
         (product) => product?.id === order?.productId
       );
-      productTotal += Number(product?.price) * Number(order?.qty);
+      let total = Number(product?.price) * Number(order?.qty)
+      productTotal += total;
       productQty += Number(order?.qty);
       packagingTotal += isTakeAway ? PACKAGING_COST * Number(order?.qty) : 0;
-      grandTotal += productTotal + packagingTotal;
+      grandTotal += total + packagingTotal;
     }
     let transactionSchema = {
       invoice: generateInvoice(),
