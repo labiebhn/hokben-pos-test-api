@@ -51,6 +51,9 @@ db.Sequelize = Sequelize;
 db.products = require("./products")(sequelize, Sequelize);
 db.product_raws = require("./product_raws")(sequelize, Sequelize);
 db.raws = require("./raws")(sequelize, Sequelize);
+db.transactions = require("./transactions")(sequelize, Sequelize);
+db.transaction_details = require("./transaction_details")(sequelize, Sequelize);
+db.transaction_detail_raws = require("./transaction_detail_raws")(sequelize, Sequelize);
 
 // Relationship
 db.products.hasMany(db.product_raws, {
@@ -59,6 +62,13 @@ db.products.hasMany(db.product_raws, {
 db.product_raws.belongsTo(db.raws, {
   as: "detail",
   foreignKey: "rawId",
+});
+
+db.transactions.hasMany(db.transaction_details, {
+  as: "transactionDetails",
+});
+db.transaction_details.hasMany(db.transaction_detail_raws, {
+  as: "transactionRaws",
 });
 
 module.exports = db;

@@ -5,10 +5,12 @@ const app = express();
 
 const raws = require("./raws/route");
 const products = require("./products/route");
+const transactions = require("./transactions/route");
 
 let API_VERSION = "v1";
 app.use(`/${API_VERSION}/raw`, raws);
 app.use(`/${API_VERSION}/product`, products);
+app.use(`/${API_VERSION}/transaction`, transactions);
 
 app.use("/", (req, res, next) => {
   const status = 404;

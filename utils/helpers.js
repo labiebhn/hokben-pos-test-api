@@ -49,3 +49,23 @@ exports.removeImage = (filePath) => {
   filePath = path.join(__dirname, "../", filePath);
   fs.unlink(filePath, (err) => console.log(err));
 };
+
+exports.generateRandomString = (length) => {
+  var result = "";
+  var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+};
+
+
+exports.generateInvoice = () => {
+  let maximum = 9999;
+  let minimum = 1000;
+  let randomStr = this.generateRandomString(3);
+  let randomNumber =
+    Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+  return `${randomStr}${randomNumber}`;
+};
